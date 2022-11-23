@@ -1,0 +1,174 @@
+CICD (Continuous Integration Continuous Delivery):
+
+CI:
+   It is a process in which multiple team members integrate
+   their work in the shared enivornment e.g Git.
+   This integration is being validated e.g unit test/syntax etc.
+
+CD (Continuous Delivery):
+   Practice to deploy every build to a production like
+   enivornment and perform automated Integration testing and user acceptance testing.
+
+CD (Continuous Deployment):
+    Practive of automatically deploying the build to the prod after successfully passing the automated tests.
+
+
+Tools:
+    Jenkins
+    Bamboo
+    TeamCity
+    CicleCI
+    TravisCI
+
+
+CI Culture:
+    1. Before committing do local test.
+    2. Dont commit new code to the broken build.
+    3. Never leave the build broken.
+    4. Dont remove the tests that fails.
+
+
+Notification:
+    1. build starts
+    2. build started but did not deployed for 30min.
+
+
+
+Setup
+1. Install docker.
+2. Docker compose for jenkins
+
+
+Jenkins - 
+    An Automated tool that builds, test and deploy the software using the pipeline.
+    It can be used to automate any tasks.
+    The task can be trigger via webhooks or click on UI.
+
+Jenkin Infrastructure
+    1. Master Server
+        Controllers Pipeline and Schedule builds
+    2. Agent / Minions
+        Perform the build.
+        
+Workflow
+    1. Commit code / merge code
+    2. Jenkin master become aware of the above step and trigger a pipeline.
+    3. It selects the appropriate agent to run based upon the label.
+    4. Agent run the build.
+
+Jenkin Agent
+    1. Pernament Agent
+        Dedicated server for running the job.
+        Java and ssh is setup and master server usually makes the connection over ssh.
+
+    2. Cloud Agents(E.g Docker, kubernetes, AWS Fleet Manager)
+
+Jenkins Build Type
+1. Free Style build projects 
+    Simplest way to create build.
+    Feels like shell scripting. has UI.
+2. Pipelines
+    Use the groovy syntax
+    Use stages to breakdown component of stages(E.g Clone, Build, Test, Package, Deploy)
+        Clone: Pull the code from the git repo and setting up the local     environment on the stage.
+        Build: Takes the code build local artifects/jar/executable/container image.
+        Test: Runs test against the builded code.
+        Deploy:        Package: It packages code so its ready for the deployment. when artifects is send to the registry.
+
+    
+
+stages {
+    stage('Clone') {
+        steps {
+            git branch: 'master'
+            url: 'https://github.com/devopsjourney1/helloworld.git'
+        }
+    }
+    stage('Build') {
+        steps {
+            ssh '''
+                docker build -t myaweseomeapp" ${BUILD_NUMBER}
+            '''
+        }
+    }
+    stage('Test') {
+        steps {
+            ssh '''
+            docker run -it myawesomeap:${build_number}
+            curl localhost:5000
+            '''
+        }
+    }
+    stage('Package') {
+        steps {
+            ssh '''
+            docker push devopsjourney/myawesomeap:${build_number}
+            '''
+        }
+    }
+    stage('Deploy') {
+        steps {
+            ssh '''
+            echo "Devops to do: add some 1337 deploy logic here"
+            '''
+        }
+    }
+}
+
+SETUP JENKINS
+    https://www.jenkins.io/doc/book/installing/docker/
+
+    docker run \
+  --name jenkins-blueocean \
+  --restart=on-failure \
+  --detach \
+  --network host \
+  --env DOCKER_HOST=tcp://docker:21376 \
+  --env DOCKER_CERT_PATH=/certs/client \
+  --env DOCKER_TLS_VERIFY=1 \
+  --publish 8080:8080 \
+  --publish 50000:50000 \
+  --volume jenkins-data:/var/jenkins_home \
+  --volume jenkins-docker-certs:/certs/client:ro \
+  jenkins/jenkins:lts
+
+Jenkins stores all of its configuration data, jobs and project workspace in a root/parent folder.
+
+Jenkins configurations
+
+    Manage Jenkins
+        configure System
+            No of Executor : at a single time how many jobs can be run on this instance.
+            Email Notification: To send email about the status of the job
+    
+        Global Tool configuration
+            JDK
+            GIT
+
+Project specific roles - plug in "Role-based Autorization strategry"
+    Manage Jenkins
+        configure global security
+        
+
+github project
+build step
+    mvn clean install
+post build 
+    container deployment 
+    credentials
+
+Tomcat
+
+sudo docker run \
+  --name tomcat \
+  -it \
+  -p 8888:8080 \
+  -v ~/Documents/DevOps-Learning/CICD/jenkins-101/tomcat/tomcat-users.xml:/usr/local/tomcat/conf/tomcat-users.xml \
+  -v ~/Documents/DevOps-Learning/CICD/jenkins-101/tomcat/context.xml:/tmp/context.xml \
+  tomcat:9.0 \
+  /bin/bash -c "mv /usr/local/tomcat/webapps /usr/local/tomcat/webapps2; mv /usr/local/tomcat/webapps.dist /usr/local/tomcat/webapps; cp /tmp/context.xml /usr/local/tomcat/webapps/manager/META-INF/context.xml; catalina.sh run"
+
+
+PIPE LINES
+
+https://github.com/simplilearn-github/Pipeline_Script
