@@ -40,3 +40,34 @@ cd
 
 top
     health of the machine. shows cpu, port, state
+
+df 
+    To check the disk usage
+    df -h
+
+ps -ef
+    to show all the processes including background and sub process.
+
+awk
+    filter info from output.
+
+    ps -ef | grep chrome | awk -F" " '{print $2}'
+
+set -x
+    this is useful in .sh file to print the command before execution.
+
+set -e
+    exit the script when there is an error
+
+set -o
+    pipe fail. if | is used in single line then it looks only for last command by default.
+
+curl 
+    to transfer data to/from the server.
+
+wget
+    to download file.
+
+find
+    find the file recursively/
+    sudo find / -name demo.py
