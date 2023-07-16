@@ -1,0 +1,42 @@
+man command
+    get detail of the command
+    e.g man ls
+
+touch files/first-shell-script.sh
+    To create the file
+
+ls -ltr
+    to list all the files with permission
+    ls -R -ltr
+        recursively show the details of the directory.
+
+sh files/first-shell-script.sh
+    execute the file.
+
+chmod
+    To grant permission.
+    ch - change. 
+    mod - module
+    chmod user/group/permission filename
+    chmod 777
+
+    4 - read
+    2 - write
+    1 - execute
+
+    chmod 400 files/first-shell-script.sh
+
+history
+    to view history of the commands
+
+mkdir
+    To create a folder
+
+pwd
+    To get the path of the current directory
+
+cd 
+    changedirectory
+
+top
+    health of the machine. shows cpu, port, state
